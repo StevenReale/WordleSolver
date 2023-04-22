@@ -15,7 +15,7 @@ public class View {
 
     public void welcome() {
         System.out.println("==================================");
-        System.out.println("       Wordle Cheater Mk. 3");
+        System.out.println("       Wordle Solver Mk. 3");
         System.out.println("==================================");
         System.out.println();
     }

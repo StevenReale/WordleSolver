@@ -35,16 +35,16 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunManager">
-    <configuration name="WordleCheater" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="WordleCheater" />
-      <module name="WordleCheater" />
+    <configuration name="WordleSolver" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="WordleSolver" />
+      <module name="WordleSolver" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.WordleCheater" />
+        <item itemvalue="Application.WordleSolver" />
       </list>
     </recent_temporary>
   </component>
