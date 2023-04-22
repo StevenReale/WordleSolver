@@ -20,35 +20,67 @@ public class View {
         System.out.println();
     }
 
-    public Game getWordProgress() {
+    public void getWordProgress() {
+        System.out.print("Input current word progress, indicating blanks with spaces: ");
+        boolean valid = false;
+        String regex = "^[A-Za-z\\s]{5}$";
+        while (!valid) {
+            String input = scanner.nextLine();
 
-        for (int i = 0; i < 5; i++) {
-            System.out.println("Enter letter " + (i + 1) + " or leave blank if unknown");
-            game.getWordToGuess().add(i, getLetter());
-        }
-        System.out.println("You have entered: ");
-        for (String letter : game.getWordToGuess()) {
-            if (letter.equals("")) {
-                System.out.print("_");
+            if (input.matches(regex)) {
+                char[] wordInProgress = input.toUpperCase().toCharArray();
+                for (int i = 0; i < wordInProgress.length; i++) {
+                    if (wordInProgress[i] == ' ') {
+                        wordInProgress[i] = '_';
+                    } else {
+                        game.getRemainingLetters().add(String.valueOf(wordInProgress[i]));
+                    }
+                }
+                game.setWordToGuess(wordInProgress);
+                valid = true;
             } else {
-                System.out.print(letter);
+                System.out.println("Invalid entry. You must enter 5 letters and/or blank spaces");
             }
+
         }
-        System.out.println();
+        System.out.println("You entered: " + new String(game.getWordToGuess()) + ".");
         boolean verify = verifyInput();
 
-        if (verify) {
-            return game;
-
-        } else {
-            game.setWordToGuess(new ArrayList<>());
-            return getWordProgress();
+        if (!verify) {
+            game.setRemainingLetters(new HashSet<>());
+            getWordProgress();
         }
+
     }
+
+//    public Game oldgetWordProgress() {
+//
+//        for (int i = 0; i < 5; i++) {
+//            System.out.println("Enter letter " + (i + 1) + " or leave blank if unknown");
+//            game.getWordToGuess().add(i, getLetter());
+//        }
+//        System.out.println("You have entered: ");
+//        for (String letter : game.getWordToGuess()) {
+//            if (letter.equals("")) {
+//                System.out.print("_");
+//            } else {
+//                System.out.print(letter);
+//            }
+//        }
+//        System.out.println();
+//        boolean verify = verifyInput();
+//
+//        if (verify) {
+//            return game;
+//
+//        } else {
+//            game.setWordToGuess(new ArrayList<>());
+//            return getWordProgress();
+//        }
+//    }
 
     public Game getRemainingLetters() {
 
-        Set<String> lettersAvailable = new HashSet<>();
         boolean validAnswer = false;
 
         while (!validAnswer) {
@@ -57,7 +89,7 @@ public class View {
             String[] input = scanner.nextLine().split(" ");
             for (int i = 0; i < input.length; i++) {
                 if (input[i].matches("[A-Za-z]")) {
-                    lettersAvailable.add(input[i].toUpperCase());
+                    game.getRemainingLetters().add(input[i].toUpperCase());
                 } else {
                     System.out.println(input[i] + " is an invalid entry. Please try again.");
                     validAnswer = false;
@@ -65,13 +97,6 @@ public class View {
                 }
             }
         }
-        for (String letter : game.getWordToGuess()) {
-            if (!letter.equals("")) {
-                lettersAvailable.add(letter);
-            }
-        }
-
-        game.setRemainingLetters(new ArrayList<>(lettersAvailable));
 
         System.out.println("The remaining available letters, including those already found in the puzzle word, are: ");
         for (String letter : game.getRemainingLetters()) {
@@ -129,12 +154,14 @@ public class View {
 
     public void generateCombinations() {
         List<Integer> blankIndexes = new ArrayList<>();
-        for (int i = 0; i < game.getWordToGuess().size(); i++) {
-            if (game.getWordToGuess().get(i).equals("")) {
+        for (int i = 0; i < game.getWordToGuess().length; i++) {
+            if (game.getWordToGuess()[i] == '_') {
                 blankIndexes.add(i);
             }
         }
         int blanks = blankIndexes.size();
+
+        game.generateRemainingLettersList();
         getCombinationsOfLetters(blanks, new ArrayList<>());
 
     }
@@ -144,27 +171,31 @@ public class View {
             game.getLetterCombos().add(combinations);
             return;
         }
-        for (int i = 0; i < game.getRemainingLetters().size(); i++) {
+        for (int i = 0; i < game.getRemainingLettersAsList().size(); i++) {
             List<String> combinationsCopy = new ArrayList<>(combinations.subList(0, combinations.size()));
-            combinationsCopy.add(game.getRemainingLetters().get(i));
+            combinationsCopy.add(game.getRemainingLettersAsList().get(i));
             getCombinationsOfLetters(depth-1, combinationsCopy);
         }
         return;
     }
 
     public void outputPossibleAnswers() {
+        int counter = 1;
         for (List<String> list : game.getLetterCombos()) {
-            int counter = 0;
+            int listIndex = 0;
+
             String answer = "";
-            for (String entry : game.getWordToGuess()) {
-                if (entry.equals("")) {
-                    answer += list.get(counter);
-                    counter++;
+            for (char entry : game.getWordToGuess()) {
+                if (entry == '_') {
+                    answer += list.get(listIndex);
+                    listIndex++;
                 } else {
                     answer += entry;
                 }
+
             }
-            System.out.println(answer);
+            System.out.println(counter + ". " + answer);
+            counter++;
         }
     }
 

@@ -4,30 +4,31 @@ import java.util.*;
 
 public class Game {
 
-    private List<String> wordToGuess;
-    private List<String> remainingLetters;
+    private char[] wordToGuess;
+    private Set<String> remainingLetters;
+    private List<String> remainingLettersAsList;
     private List<KnownLetter> knownLetters;
     private List<List<String>> letterCombos;
 
     public Game() {
-        wordToGuess = new ArrayList<>();
+        remainingLetters = new HashSet<>();
         knownLetters = new ArrayList<>();
         letterCombos = new ArrayList<>();
     }
 
-    public List<String> getWordToGuess() {
+    public char[] getWordToGuess() {
         return wordToGuess;
     }
 
-    public void setWordToGuess(List<String> wordToGuess) {
+    public void setWordToGuess(char[] wordToGuess) {
         this.wordToGuess = wordToGuess;
     }
 
-    public List<String> getRemainingLetters() {
+    public Set<String> getRemainingLetters() {
         return remainingLetters;
     }
 
-    public void setRemainingLetters(List<String> remainingLetters) {
+    public void setRemainingLetters(Set<String> remainingLetters) {
         this.remainingLetters = remainingLetters;
     }
 
@@ -37,5 +38,13 @@ public class Game {
 
     public void setLetterCombos(List<List<String>> letterCombos) {
         this.letterCombos = letterCombos;
+    }
+
+    public void generateRemainingLettersList() {
+        remainingLettersAsList = new ArrayList<>(remainingLetters);
+    }
+
+    public List<String> getRemainingLettersAsList() {
+        return remainingLettersAsList;
     }
 }
