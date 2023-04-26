@@ -7,12 +7,12 @@ public class Game {
     private char[] wordToGuess;
     private Set<String> remainingLetters;
     private List<String> remainingLettersAsList;
-    private List<KnownLetter> knownLetters;
+    private Map<String, Set<Integer>> knownLetters;
     private List<List<String>> letterCombos;
 
     public Game() {
         remainingLetters = new HashSet<>();
-        knownLetters = new ArrayList<>();
+        knownLetters = new HashMap<>();
         letterCombos = new ArrayList<>();
     }
 
@@ -46,5 +46,9 @@ public class Game {
 
     public List<String> getRemainingLettersAsList() {
         return remainingLettersAsList;
+    }
+
+    public Map<String, Set<Integer>> getKnownLetters() {
+        return knownLetters;
     }
 }

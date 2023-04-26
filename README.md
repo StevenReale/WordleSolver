@@ -9,9 +9,9 @@ available letters.
 1. Add the current state of a Wordle puzzle including blank letters.
 2. Add the list of available letters.
 3. Generate a numbered list of all combinations of available letters in the puzzle blanks.
+4. Specify known letters and the blank(s) they do not belong in to further narrow down results.
 
 ## To-do
-1. Specify known letters and the blank(s) they do not belong in to further narrow down results.
-2. Connect to Wordle dictionary API and cross-check generated answers against legal words.
-3. Build web interface.
+1. Connect to Wordle dictionary API and cross-check generated answers against legal words.
+2. Build web interface.
 

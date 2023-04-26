@@ -53,32 +53,6 @@ public class View {
 
     }
 
-//    public Game oldgetWordProgress() {
-//
-//        for (int i = 0; i < 5; i++) {
-//            System.out.println("Enter letter " + (i + 1) + " or leave blank if unknown");
-//            game.getWordToGuess().add(i, getLetter());
-//        }
-//        System.out.println("You have entered: ");
-//        for (String letter : game.getWordToGuess()) {
-//            if (letter.equals("")) {
-//                System.out.print("_");
-//            } else {
-//                System.out.print(letter);
-//            }
-//        }
-//        System.out.println();
-//        boolean verify = verifyInput();
-//
-//        if (verify) {
-//            return game;
-//
-//        } else {
-//            game.setWordToGuess(new ArrayList<>());
-//            return getWordProgress();
-//        }
-//    }
-
     public Game getRemainingLetters() {
 
         boolean validAnswer = false;
@@ -87,14 +61,18 @@ public class View {
             validAnswer = true;
             System.out.println("Enter all remaining letters separated by spaces:");
             String[] input = scanner.nextLine().split(" ");
-            for (int i = 0; i < input.length; i++) {
-                if (input[i].matches("[A-Za-z]")) {
-                    game.getRemainingLetters().add(input[i].toUpperCase());
-                } else {
-                    System.out.println(input[i] + " is an invalid entry. Please try again.");
-                    validAnswer = false;
-                    break;
+            if (!(input.length == 1 && input[0].equals(""))) {
+                for (int i = 0; i < input.length; i++) {
+                    if (input[i].matches("[A-Za-z]")) {
+                        game.getRemainingLetters().add(input[i].toUpperCase());
+                    } else {
+                        System.out.println(input[i] + " is an invalid entry. Please try again.");
+                        validAnswer = false;
+                        break;
+                    }
                 }
+            } else {
+                System.out.println("No additional unknown letters.");
             }
         }
 
@@ -118,36 +96,47 @@ public class View {
 
     public void getKnownLetters() {
 
-        List<KnownLetter> knownLetters = new ArrayList<>();
-
         while (true) {
             KnownLetter known;
             String letter;
-            System.out.println("Add next known letter or hit return to finish");
-            letter = scanner.nextLine();
-            if (letter.equals("")) {
-                return;
-            } else {
-                known = new KnownLetter(letter);
+            Set<Integer> indices = new HashSet<>();
+            while (true) {
+                System.out.println("Add next known letter or hit return to finish");
+                letter = scanner.nextLine();
+                if (letter.equals("")) {
+                    return;
+                } else if (!letter.matches("^[A-Za-z]$")) {
+                    System.out.println("Invalid entry. Try again.");
+                } else {
+                    known = new KnownLetter(letter.toUpperCase());
+                    break;
+                }
             }
 
             boolean validInput = false;
             while (!validInput) {
                 System.out.println("Enter the blanks where it is known that this letter does not appear as a space-delimited list");
                 String[] input = scanner.nextLine().split(" ");
-                Set<Integer> indices = new HashSet<>();
+
                 for (int i = 0; i < input.length; i++) {
+                    validInput = true;
                     try {
                         int currentDigit = Integer.parseInt(input[i]);
                         if (currentDigit < 1 || currentDigit > 5) {
-                            indices.add(currentDigit);
+                            throw new Exception();
                         }
+                        indices.add(currentDigit);
                     } catch (Exception e) {
                         System.out.println("Invalid entry. Please try again.");
+                        validInput = false;
                     }
 
                 }
+
             }
+            known.setIndices(indices);
+            game.getKnownLetters().put(known.getLetter(), known.getIndices());
+            game.getRemainingLetters().add(known.getLetter());
         }
 
     }
@@ -180,42 +169,65 @@ public class View {
     }
 
     public void outputPossibleAnswers() {
+        char[] word = game.getWordToGuess();
         int counter = 1;
         for (List<String> list : game.getLetterCombos()) {
+            boolean validCombo = true;
             int listIndex = 0;
 
             String answer = "";
-            for (char entry : game.getWordToGuess()) {
-                if (entry == '_') {
-                    answer += list.get(listIndex);
+            for (int i = 0; i < word.length; i++) {
+                if (word[i] == '_') {
+                    String currentChar = list.get(listIndex);
+                    if (game.getKnownLetters().containsKey(currentChar) && game.getKnownLetters().get(currentChar).contains(i+1)) {
+                        validCombo = false;
+                    }
+                    answer += currentChar;
                     listIndex++;
                 } else {
-                    answer += entry;
+                    answer += word[i];
                 }
 
             }
-            System.out.println(counter + ". " + answer);
-            counter++;
-        }
-    }
-
-    private String getLetter() {
-
-        boolean validAnswer = false;
-        String returnValue = "";
-
-        while (validAnswer == false) {
-            String input = scanner.nextLine();
-            if (input.matches("[A-Za-z]?")) {
-                returnValue = input.toUpperCase();
-                validAnswer = true;
-            } else {
-                System.out.println("That was not a valid input. Please try again.");
+            if (validCombo && containsEveryKnownLetter(answer)) {
+                System.out.println(counter + ". " + answer);
+                counter++;
             }
-
         }
-        return returnValue;
     }
+
+    private boolean containsEveryKnownLetter(String answer) {
+        char[] charArray = answer.toCharArray();
+        for (Map.Entry<String, Set<Integer>> knownLetterEntries : game.getKnownLetters().entrySet()) {
+            boolean containsCurrentLetter = false;
+            String currentLetter = knownLetterEntries.getKey();
+            for (char letter : charArray) {
+                if (String.valueOf(letter).equals(currentLetter)) {
+                    containsCurrentLetter = true;
+                }
+            }
+            if (!containsCurrentLetter) return false;
+        }
+        return true;
+    }
+
+//    private String getLetter() {
+//
+//        boolean validAnswer = false;
+//        String returnValue = "";
+//
+//        while (validAnswer == false) {
+//            String input = scanner.nextLine();
+//            if (input.matches("[A-Za-z]?")) {
+//                returnValue = input.toUpperCase();
+//                validAnswer = true;
+//            } else {
+//                System.out.println("That was not a valid input. Please try again.");
+//            }
+//
+//        }
+//        return returnValue;
+//    }
 
     private boolean verifyInput() {
         System.out.print("Is this correct? (Y/N) : ");

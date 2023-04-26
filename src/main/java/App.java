@@ -16,7 +16,7 @@ public class App {
     public void run() {
         view.welcome();
         view.getWordProgress();
-        //view.getKnownLetters();
+        view.getKnownLetters();
         view.getRemainingLetters();
         view.generateCombinations();
         view.outputPossibleAnswers();

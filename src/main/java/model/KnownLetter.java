@@ -1,13 +1,16 @@
 package model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class KnownLetter {
 
     private String letter;
-    private int[] indices;
+    private Set<Integer> indices;
 
     public KnownLetter(String letter) {
         this.letter = letter;
-        indices = new int[5];
+        indices = new HashSet<>();
     }
 
     public String getLetter() {
@@ -18,11 +21,11 @@ public class KnownLetter {
         this.letter = letter;
     }
 
-    public int[] getIndices() {
+    public Set<Integer> getIndices() {
         return indices;
     }
 
-    public void setIndices(int[] indices) {
+    public void setIndices(Set<Integer> indices) {
         this.indices = indices;
     }
 }
