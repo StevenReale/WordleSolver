@@ -168,7 +168,7 @@ public class View {
         return;
     }
 
-    public void outputPossibleAnswers() {
+    public void outputPossibleAnswers(Set<String> wordDict) {
         char[] word = game.getWordToGuess();
         int counter = 1;
         for (List<String> list : game.getLetterCombos()) {
@@ -189,7 +189,7 @@ public class View {
                 }
 
             }
-            if (validCombo && containsEveryKnownLetter(answer)) {
+            if (validCombo && containsEveryKnownLetter(answer) && wordDict.contains(answer)) {
                 System.out.println(counter + ". " + answer);
                 counter++;
             }

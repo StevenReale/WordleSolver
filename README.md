@@ -10,8 +10,8 @@ available letters.
 2. Add the list of available letters.
 3. Generate a numbered list of all combinations of available letters in the puzzle blanks.
 4. Specify known letters and the blank(s) they do not belong in to further narrow down results.
+5. Cross-references possible combinations against Wordle dictionary ([found on sholtes's github here](https://gist.github.com/scholtes/94f3c0303ba6a7768b47583aff36654d)).
 
 ## To-do
-1. Connect to Wordle dictionary API and cross-check generated answers against legal words.
-2. Build web interface.
+1. Build web interface.
 
